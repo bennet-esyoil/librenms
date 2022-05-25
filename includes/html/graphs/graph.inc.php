@@ -100,7 +100,6 @@ if (empty($rrd_options)) {
 
     return;
 }
-
 // Generating the graph!
 try {
     $image_data = Rrd::graph($rrd_options);

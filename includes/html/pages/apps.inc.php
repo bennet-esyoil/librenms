@@ -388,6 +388,11 @@ $graphs['chronyd'] = [
     'frequency',
     'root',
 ];
+$graphs['mysql-replication'] = [
+    'seconds_behind_master',
+    'replica_io_running',
+    'replica_sql_running', // also called  Slave_SQL_Running in older versions
+];
 
 echo '<div class="panel panel-default">';
 echo '<div class="panel-heading">';

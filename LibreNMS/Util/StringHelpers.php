@@ -78,6 +78,7 @@ class StringHelpers
             'ups-apcups' => 'UPS apcups',
             'ups-nut' => 'UPS nut',
             'zfs' => 'ZFS',
+            'mysql-replication' => 'MySQL Replication',
         ];
 
         return isset($replacements[$string]) ? $replacements[$string] : ucwords(str_replace(['_', '-'], ' ', $string));
