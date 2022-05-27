@@ -3,7 +3,8 @@
 $graphs = [
   'mysql-replication_seconds_behind_master' => "Seconds behind Master",
   'mysql-replication_replica_io_running' => "Replica IO Running",
-  'mysql-replication_replica_sql_running' => "Replica SQL Running"
+  'mysql-replication_replica_sql_running' => "Replica SQL Running",
+  'mysql-replication_replication_lag' => "Calculated Replication Lag"
 ];
 
 foreach ($graphs as $key => $text) {

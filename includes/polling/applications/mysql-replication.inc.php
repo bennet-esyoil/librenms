@@ -27,12 +27,14 @@ $rrd_name = ['app', $name, $app_id];
 $rrd_def = RrdDefinition::make()
   ->addDataset('seconds_behind_master', 'GAUGE', 0)
   ->addDataset('replica_io_running', 'GAUGE', 0)
-  ->addDataset('replica_sql_running', 'GAUGE', 0);
+  ->addDataset('replica_sql_running', 'GAUGE', 0)
+  ->addDataset('replication_lag', 'GAUGE', 0);
 
 $fields = [
   'seconds_behind_master' => intval($map['a1']),
   'replica_io_running' => intval($map['a2'] == "Yes"),
-  'replica_sql_running'=> intval($map['a3'] == "Yes")
+  'replica_sql_running'=> intval($map['a3'] == "Yes"),
+  'replication_lag' => $map['a4']
 ];
 
 $tags = compact('name', 'app_id', 'rrd_name', 'rrd_def');
