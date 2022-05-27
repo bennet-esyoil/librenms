@@ -57,6 +57,7 @@ class StringHelpers
             'gpsd' => 'GPSD',
             'mailcow-postfix' => 'mailcow-dockerized postfix',
             'mysql' => 'MySQL',
+            'mysql-replication' => 'MySQL Replication',
             'nfs-server' => 'NFS Server',
             'nfs-stats' => 'NFS Stats',
             'nfs-v3-stats' => 'NFS v3 Stats',
@@ -77,8 +78,7 @@ class StringHelpers
             'smart' => 'SMART',
             'ups-apcups' => 'UPS apcups',
             'ups-nut' => 'UPS nut',
-            'zfs' => 'ZFS',
-            'mysql-replication' => 'MySQL Replication',
+            'zfs' => 'ZFS'
         ];
 
         return isset($replacements[$string]) ? $replacements[$string] : ucwords(str_replace(['_', '-'], ' ', $string));
