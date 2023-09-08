@@ -25,23 +25,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use LibreNMS\Util\StringHelpers;
 
 class Application extends DeviceRelatedModel
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
+    use SoftDeletes;
     public $timestamps = false;
-
-    /**
-     * The primary key column name.
-     *
-     * @var string
-     */
     protected $primaryKey = 'app_id';
+    protected $fillable = ['device_id', 'app_type', 'app_instance', 'app_status', 'app_state', 'data', 'deleted_at', 'discovered'];
+    protected $casts = [
+        'data' => 'array',
+    ];
 
     // ---- Helper Functions ----
 
@@ -52,6 +47,6 @@ class Application extends DeviceRelatedModel
 
     public function getShowNameAttribute()
     {
-        return StringHelpers::niceCase($this->app_type);
+        return $this->displayName();
     }
 }

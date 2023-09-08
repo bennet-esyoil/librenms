@@ -47,6 +47,7 @@ class StringHelpers
     {
         $replacements = [
             'bind' => 'BIND',
+            'cape' => 'CAPEv2',
             'dbm' => 'dBm',
             'dhcp-stats' => 'DHCP Stats',
             'entropy' => 'Random entropy',
@@ -55,6 +56,8 @@ class StringHelpers
             'fbsd-nfs-server' => 'FreeBSD NFS Server',
             'freeradius' => 'FreeRADIUS',
             'gpsd' => 'GPSD',
+            'hv-monitor' => 'HV Monitor',
+            'mojo_cape_submit' => 'Mojo CAPE Submit',
             'mailcow-postfix' => 'mailcow-dockerized postfix',
             'mysql' => 'MySQL',
             'mysql-replication' => 'MySQL Replication',
@@ -65,6 +68,7 @@ class StringHelpers
             'ntp-client' => 'NTP Client',
             'ntp-server' => 'NTP Server',
             'opengridscheduler' => 'Open Grid Scheduler',
+            'opensearch' => 'Elasticsearch\Opensearch',
             'os-updates' => 'OS Updates',
             'php-fpm' => 'PHP-FPM',
             'pi-hole' => 'Pi-hole',

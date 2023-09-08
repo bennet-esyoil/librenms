@@ -124,15 +124,15 @@ file sequence.
 
 ## Configure LibreNMS - All Operating Systems
 
-Edit `/opt/librenms/config.php` and add the following:
+!!! setting "external/smokeping"
+    ```bash
+    lnms config:set smokeping.dir '/var/lib/smokeping'
+    lnms config:set smokeping.pings 20
+    lnms config:set smokeping.probes 2
+    lnms config:set smokeping.integration true
+    lnms config:set smokeping.url 'smokeping/'
+    ```
 
-```php
-$config['smokeping']['dir'] = '/var/lib/smokeping';
-$config['smokeping']['pings'] = 20;
-$config['smokeping']['probes'] = 2;
-$config['smokeping']['integration'] = true;
-$config['smokeping']['url'] = 'smokeping/';  // If you have a specific URL or path for smokeping
-```
 `dir` should match the location that smokeping writes RRD's to
 `pings` should match the default smokeping value, default 20
 `probes` should be the number of processes to spread pings over, default 2
@@ -194,7 +194,7 @@ Then configure Nginx with the default configuration
 cp /usr/share/doc/fcgiwrap/examples/nginx.conf /etc/nginx/fcgiwrap.conf
 ```
 
-Add the following configuration to your `/etc/nginx/conf.d/librenms` config file.
+Add the following configuration to your `/etc/nginx/conf.d/librenms.conf` file within `server` section.
 
 The following will configure Nginx to respond to `http://yourlibrenms/smokeping`:
 
@@ -300,13 +300,46 @@ datadir = /opt/librenms/rrd/smokeping
 dyndir = /opt/librenms/rrd/smokeping/__cgi
 ```
 
+If you have SELinux on, see next section before starting smokeping.
 Finally restart the smokeping service:
 
 ```bash
 sudo systemctl start smokeping
 ```
 
-Remember to update *config.php* with the new locations.
+Remember to update your config with the new locations.
+
+#### Configure SELinux to allow smokeping to write in LibreNMS directory on Centos / RHEL
+If you are using RRDCached with the -B switch and smokeping RRD's inside the LibreNMS RRD base directory, you can install this SELinux profile:
+
+```
+cat > smokeping_librenms.te << EOF
+module smokeping_librenms 1.0;
+ 
+require {
+type httpd_t;
+type smokeping_t;
+type smokeping_var_lib_t;
+type var_run_t;
+type httpd_sys_rw_content_t;
+class dir { add_name create getattr read remove_name search write };
+class file { create getattr ioctl lock open read rename setattr unlink write };
+}
+ 
+#============= httpd_t ==============
+ 
+allow httpd_t smokeping_var_lib_t:dir read;
+allow httpd_t var_run_t:file { read write };
+ 
+#============= smokeping_t ==============
+ 
+allow smokeping_t httpd_sys_rw_content_t:dir { add_name create getattr remove_name search write };
+allow smokeping_t httpd_sys_rw_content_t:file { create getattr ioctl lock open read rename setattr unlink write };
+EOF
+checkmodule -M -m -o smokeping_librenms.mod smokeping_librenms.te
+semodule_package -o smokeping_librenms.pp -m smokeping_librenms.mod
+semodule -i smokeping_librenms.pp
+```
 
 ### Probe FPing missing missing from the probes section
 

@@ -3,7 +3,10 @@
 > at `mysql>` prompts) or temporarily become a user with root
 > privileges with `sudo -s` or `sudo -i`.
 
-**Please note the minimum supported PHP version is @= php.version_min =@**
+!!! warning
+
+    Please note the minimum supported PHP version is @= php.version_min =@.  
+    The guide below might not have been updated to reflect it!
 
 
 ## Install Common Required Packages ##
@@ -274,7 +277,7 @@ systemctl restart snmpd
 # Cron job
 
 ```
-cp /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
+cp /opt/librenms/dist/librenms.cron /etc/cron.d/librenms
 ```
 
 > NOTE: Keep in mind  that cron, by default, only uses a very limited

@@ -123,18 +123,18 @@ class AlertUtil
             }
         }
         foreach ($users as $user) {
-            if (empty($user['email'])) {
+            if (empty($user->email)) {
                 continue; // no email, skip this user
             }
-            if (empty($user['realname'])) {
-                $user['realname'] = $user['username'];
-            }
-            if (Config::get('alert.globals') && ($user['level'] >= 5 && $user['level'] < 10)) {
-                $contacts[$user['email']] = $user['realname'];
-            } elseif (Config::get('alert.admins') && $user['level'] == 10) {
-                $contacts[$user['email']] = $user['realname'];
-            } elseif (Config::get('alert.users') == true && in_array($user['user_id'], $uids)) {
-                $contacts[$user['email']] = $user['realname'];
+
+            $name = $user->realname ?: $user->username;
+
+            if (Config::get('alert.globals') && $user->hasGlobalRead()) {
+                $contacts[$user->email] = $name;
+            } elseif (Config::get('alert.admins') && $user->isAdmin()) {
+                $contacts[$user->email] = $name;
+            } elseif (Config::get('alert.users') && in_array($user['user_id'], $uids)) {
+                $contacts[$user->email] = $name;
             }
         }
 
@@ -181,14 +181,15 @@ class AlertUtil
         LEFT JOIN alert_device_map d ON a.id=d.rule_id AND (a.invert_map = 0 OR a.invert_map = 1 AND d.device_id = ?)
         LEFT JOIN alert_group_map g ON a.id=g.rule_id AND (a.invert_map = 0 OR a.invert_map = 1 AND g.group_id IN (SELECT DISTINCT device_group_id FROM device_group_device WHERE device_id = ?))
         LEFT JOIN alert_location_map l ON a.id=l.rule_id AND (a.invert_map = 0 OR a.invert_map = 1 AND l.location_id IN (SELECT DISTINCT location_id FROM devices WHERE device_id = ?))
+        LEFT JOIN devices ld ON l.location_id=ld.location_id AND ld.device_id = ?
         LEFT JOIN device_group_device dg ON g.group_id=dg.device_group_id AND dg.device_id = ?
         WHERE a.disabled = 0 AND (
-            (d.device_id IS NULL AND g.group_id IS NULL)
-            OR (a.invert_map = 0 AND (d.device_id=? OR dg.device_id=?))
-            OR (a.invert_map = 1  AND (d.device_id != ? OR d.device_id IS NULL) AND (dg.device_id != ? OR dg.device_id IS NULL))
+            (d.device_id IS NULL AND g.group_id IS NULL AND l.location_id IS NULL)
+            OR (a.invert_map = 0 AND (d.device_id=? OR dg.device_id=? OR ld.device_id=?))
+            OR (a.invert_map = 1  AND (d.device_id != ? OR d.device_id IS NULL) AND (dg.device_id != ? OR dg.device_id IS NULL) AND (ld.device_id != ? OR ld.device_id IS NULL))
         )';
 
-        $params = [$device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id];
+        $params = [$device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id, $device_id];
 
         return dbFetchRows($query, $params);
     }

@@ -3,7 +3,10 @@
 > at `mysql>` prompts) or temporarily become a user with root
 > privileges with `sudo -s` or `sudo -i`.
 
-**Please note the minimum supported PHP version is @= php.version_min =@**
+!!! warning
+
+    Please note the minimum supported PHP version is @= php.version_min =@.  
+    The guide below might not have been updated to reflect it!
 
 # On the DB Server
 
@@ -364,7 +367,7 @@ indicate otherwise!
 Initiate the follow database with the following command:
 
 ```
-php includes/sql-schema/update.php
+./lnms migrate
 ```
 
 # Create admin user
@@ -423,7 +426,7 @@ If the thread count needs to be changed, you can do so by editing the cron file 
 Create the cronjob
 
 ```
-cp librenms.nonroot.cron /etc/cron.d/librenms
+cp dist/librenms.cron /etc/cron.d/librenms
 ```
 
 > NOTE: Keep in mind  that cron, by default, only uses a very limited
@@ -448,18 +451,12 @@ cp misc/librenms.logrotate /etc/logrotate.d/librenms
 
 LibreNMS performs daily updates by default.  At 00:15 system time
 every day, a `git pull --no-edit --quiet` is performed.  You can
-override this default by editing your `config.php` file.  Remove the
-comment (the `#` mark) on the line:
+override this default:
 
-```
-#$config['update'] = 0;
-```
-
-so that it looks like this:
-
-```
-$config['update'] = 0;
-```
+!!! setting "system/updates"
+    ```bash
+    lnms config:set update false
+    ```
 
 # Install complete
 
